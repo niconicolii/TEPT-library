@@ -1,0 +1,13 @@
+.c {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.v {
+    z-index: 1;
+}
+
+.ytp-chrome-top, .ytp-show-cards-title {
+	z-index: 1000;
+}

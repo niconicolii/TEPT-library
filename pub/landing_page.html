@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset="uft-8">
+		<title>TEPT</title>
+		<link rel="stylesheet" type="text/css" href="landing_page.css" />
+		<link rel="stylesheet" type="text/css" href="TEPT.css">
+		<link type="text/css" rel="stylesheet" href="prism.css">
+		<link rel="shortcut icon" href="favicon.ico" />
+	</head>
+	<body>
+	<div id="header_wrapper">
+		<div id="header" class="head_container">
+			<div id="library_title">
+				<h1>TEPT</h1>
+				<span>Text Effect Position Time</span>
+			</div>
+			<div id="menu">
+				<ul>
+					<li><a onclick="showIntro()">Intro</a></li>
+					<li><a onclick="showDemo()">Examples</a></li>
+					<li><a onclick="showAPI()">API</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="wrapper" id="intro_wrapper">
+		<div class="intro_title">
+			<h2>Introduction to TEPT</h2>
+		</div>
+		<p> <strong>TEPT</strong> is a JavaScript library where the four letters stand for <strong>Text</strong>, <strong>Effects</strong>, <strong>Position</strong>, and <strong>Time</strong>. The main function of this library is to display text on videos embedded on a web page with some simple special effects and user-defined time and position. This library provides convenience for developers who would like to show comments as part of the video (e.g. like Danmaku, live streams), or making web applications with videos showing subtitles or closed captions.
+		</p><br><br><br>
+		<hr><br><br><br>
+
+		<div class="intro_title">
+			<h2>Motivation and Use Cases</h2>
+		</div>
+		<p>The idea came from the inconvenient way of how we could see real-time comments for recorded live videos. For example, professors could choose to record the chatting room together with their live lecture on BB Collaborate. When we watch the recording, the comments in the chat are shown in real-time with the recording, so it scrolls down the chat automatically. However, the chatting section blocks quite a bit of the page so I usually close it, and then I would forget to look at it. To solve this problem, we can display the comments on top of the video, with the text being half-transparent without blocking too much, just like how Instagram Live displays the comments at the lower-left corner. </p>
+
+		<p>	Another inconveniency of a live chatting room, which BB Collaborate and also YouTube have is that when people are chatting too fast, others may not be able to finish reading a comment before it automatically scrolls away. As I describe in the previous paragraph, a developer could write their application such that whenever people submit a comment in the chatting room, they are creating a text, which will be displayed on top of the video, with the start time being the time they submit but with no set position. Therefore, when multiple people submit comments in very close time, the comments will be displayed in real-time and will be automatically positioned at different locations within the scope of the video without overlapping. Since this type of texts only has a start time, the webpage developer should decide a default time range for the text to stay on the screen or a condition for the webpage to disappear, for example having all comments in one line and scrolls from the right edge to the left edge and scrolls out of scope. This will allow displaying multiple comments that are sent at the same time or very close time. A similar use case could be seen in videos from nicovideo.jp. </p>
+
+		<p> One more use case would be to create subtitles or captions for videos online. Users could edit subtitles by simply giving every line of text a start time and end time, then they can see the subtitles whenever they play the video. This is similar to YouTube’s closed caption.
+		</p>
+		<br><br><br><br>
+	</div>
+	<div class="wrapper" id="demo_wrapper" style="display:none">
+		<h1>Use Case Examples of TEPT</h1>
+		<div class="use_case_wrapper">
+			<h2>Posting Danmaku on Videos Embedded with HTML 'video' tag</h2>
+			<br>
+			<p><strong>Danmaku</strong> - also known as "bullet curtains". The term came from Japan and was originated by <a href="https://www.nicovideo.jp/">Nico Nico</a>. Comments are called "bullets" and audiences would "shoot" their comments onto the video, then comment would appear on the video and fly pass the screen horizontally just like a bullet flying by. </p>
+				<p>This library contains methods that would be very helpful for developing such video websites, and exist more motions for the "bullet" comments. Have a try by selecting the <strong>bullet motion</strong>, the <strong>color</strong>, and <strong>submit some comments</strong>! You can also adjust the <strong>transparency</strong> of all the bullets.</p>
+			<div>
+			 	<video id="first_v" controls>
+				    <source src="test.mp4" type="video/mp4">
+				    <source src="test.ogg" type="video/ogg">
+				</video>
+				<br>Video courtesy of [SBS] Running Man
+			</div>
+			<br>
+			<div>
+				<label for='first_trans'>Transparency</label>
+				<input type="range" min="1" max="100" value="100" id="first_trans" class="transparency">
+				<br><br>
+				<form id='first_commentForm'>
+					<label for="color">Color</label>
+					<input type="color" id="first_color" value="#ffffff">
+					<input type="text" id="first_hex" value="#ffffff" size="8" style="margin-right:30px">
+					
+					<label for='effect'>Bullet Motion</label>
+					<select name="effect" id="first_effect" value="No Effect">
+					  <option value="no change">No Effect</option>
+					  <option value="left to right">Left to Right</option>
+					  <option value="right to left">Right to Left</option>
+					  <option value="top to bottom">Top to Bottom</option>
+					  <option value="bottom to top">Bottom to Top</option>
+					</select><br><br>
+					
+					<label for="first_content">Comment</label>
+					<input id='first_content' class="contentIn" type='text' placeholder="Comment something!">
+					<input class='contentBtn' type='submit' value="Submit">
+					<br>
+				</form>
+			</div>
+		</div>
+		<hr>
+		<div class="use_case_wrapper">
+			<h2>Posting Danmaku on Embedded YouTube Videos</h2>
+			<br>
+			<p>TEPT also supports posting texts on YouTube videos embedded(using <a href='https://developers.google.com/youtube/iframe_api_reference'>YouTube iframe API</a>) on your website! Try the similar use case with the following embedded video!</p>
+			<div>
+			 	<div id="youtube_video"></div>
+			</div>
+			<br>
+			<div>
+				<label for='second_trans'>Transparency</label>
+				<input type="range" min="1" max="100" value="100" id="second_trans" class="transparency">
+				<br><br>
+				<form id='second_commentForm'>
+					<label for="second_color">Color</label>
+					<input type="color" id="second_color" value="#ffffff">
+					<input type="text" id="second_hex" value="#ffffff" size="8" style="margin-right:30px">
+					
+					<label for='second_effect'>Bullet Motion</label>
+					<select name="effect" id="second_effect" value="No Effect">
+					  <option value="no change">No Effect</option>
+					  <option value="left to right">Left to Right</option>
+					  <option value="right to left">Right to Left</option>
+					  <option value="top to bottom">Top to Bottom</option>
+					  <option value="bottom to top">Bottom to Top</option>
+					</select><br><br>
+					
+					<label for="second_content">Comment</label>
+					<input id='second_content' class="contentIn" type='text' placeholder="Comment something!">
+					<input class='contentBtn' type='submit' value="Submit">
+					<br>
+				</form>
+			</div>
+		</div>
+		<hr>
+		<div class="use_case_wrapper">
+			<h2>Posting Scrolling Comments</h2>
+			<br>
+			<p>This use case is very similar to Instagram Live where previous comments will be scrolled up if new comments are added.</p>
+			<div>
+			 	<video id="third_v" controls>
+				    <source src="test.mp4" type="video/mp4">
+				    <source src="test.ogg" type="video/ogg">
+				</video>
+				<br>Video courtesy of [SBS] Running Man
+			</div>
+			<br>
+			<div>
+				<form id='third_commentForm'>
+					<label for='username'>Your Name</label>
+					<input id='username' class="contentIn" type='text' placeholder="Your Username">
+					<br><br>
+					<label for="third_content">Comment</label>
+					<input id='third_content' class="contentIn" type='text' placeholder="Comment something!">
+					<input class='contentBtn' type='submit' value="Submit">
+					<br>
+				</form>
+			</div>
+		</div>
+		<hr>
+		<div class="use_case_wrapper">
+			<h2>Posting Subtitle or Closed Captions</h2>
+			<br>
+			<p>TEPT is also very useful with creating/posting subtitles or closed captions on a video embedded in the webpage. </p>
+			<p> For the following example, type in some text, <strong>press down</strong> the submit button to set current video time to be the start time of this text, then <strong>release mouse</strong> to set the end time of this text. When you <strong>playback</strong> the video, you should see the text to be showned in the time period you set.</p>
+			<div>
+			 	<video id="forth_v" controls>
+				    <source src="test.mp4" type="video/mp4">
+				    <source src="test.ogg" type="video/ogg">
+				</video>
+				<br>Video courtesy of [SBS] Running Man
+			</div>
+			<br>
+			<div>
+				<input class='contentIn' id='caption' placeholder="Subtitle or closed caption">
+				<button class='contentBtn' id='set_time'> Set Time </button>
+			</div>
+		</div>
+
+
+		<br><br><br><br>
+	</div>
+
+	<div class="wrapper" id="api_wrapper" style="display:none">
+		<h1>Documentation</h1>
+		<br><br>
+		<h2>Getting Started</h2><hr><br>
+		<p>The following instructions will help you get a copy of the library and describes a basic usage of the TEPT library. And the API list is down below</p>
+
+		<ul class='instructions'>
+			<li>Download <strong>TEPT.js</strong> and <strong>TEPT.css</strong> on your local machine. These could be found at <strong>/pub/js</strong> and <strong>/pub</strong> in this <a href='https://github.com/csc309-summer-2020/js-library-wangnic8'>GitHub repository</a >.</li>
+			<li>Reference both <strong>TEPT.js</strong> and <strong>TEPT.css</strong> in the HTML file which you will be using this library.</li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-html">&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;TEPT.css&quot;&gt; 
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/TEPT.js&quot;&gt;&lt;/script&gt;</code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>Embed your video using the HTML <strong>&lt;video&gt;</strong> tag, an example is shown. Your video must have the format that is supported by HTML and your browser. However, TEPT also supports YouTube videos embedded, which will be explained later in this introduction.</li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-html">&lt;video id=&quot;test_video&quot; autoplay=&quot;autoplay&quot; controls&gt;
+	&lt;source src=&quot;test.mp4&quot; type=&quot;video/mp4&quot;&gt;
+	&lt;source src=&quot;test.ogg&quot; type=&quot;video/ogg&quot;&gt;
+&lt;/video&gt;  </code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>Add to the script for this HTML the following to initialize the library.</li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-js">const tept = new TEPT();</code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>Set up the library by giving the id of the video element you just embedded. By doing this, the library will create a canvas element covering the whole video scope where texts will be shown.</li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-js">tept.setVideo('test_video')</code></pre>
+		</div>
+		<ul class='level_two_instructions'>
+			<li>You can also set up the library with a list of 4 percentages to limit the area for displaying text. This example shows that texts could appear between anywhere from left edge to the right edge of the video, but only between 0.3*height and 0.7*height:</li>
+		</ul>
+		<div class="level_two_codes">
+			<pre><code class="language-js">tept.setVideo('test_video', [0.0, 1.0, 0.3, 0.7])</code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>Now you can create text to be displayed on top of the video by using the createText function by giving the text <strong>content</strong>, <strong>start time</strong>, <strong>end time</strong>, <strong>color</strong>, <strong>size</strong>, <strong>positionPer</strong>, <strong>effect</strong> parameters.
+			</li>
+		</ul>
+		<ul class='level_two_instructions'>
+			<li><strong>content</strong> is a String that is the actual text to be shown.</li>
+			<li><strong>start time</strong> and <strong>end time</strong> are decimal numbers representing time by seconds, your text will be shown between this two seconds. It is recommended to use the <strong>getVideoTime</strong> method provided by the TEPT library which gets the current second of the video.</li>
+			<li><strong>color</strong> is a String indicating the color of the text to be shown, this could be any format supported by HTML.</li>
+			<li><strong>size</strong> is an integer for the font size.</li>
+			<li><strong>positionPer</strong> is an 2d array that are percentages indicating the x(positionPer[0]*width) and y(positionPer[1]*height) coordinates of where the text will be shown.</li>
+			<li><strong>effect</strong> is a String that is either <strong>'no change'</strong>, <strong>'left to right'</strong>, <strong>'right to left'</strong>, <strong>'top to bottom'</strong>, <strong>'bottom to top'</strong>, or <strong>'push up'</strong>, which are the existing effects(motions of the texts) in this version of TEPT. See demos in the <a href=''>landing page</a> to see how different effects look like.</li>
+		</ul>
+		<div class="level_two_codes">
+			<pre><code class="language-js">tept.createText('This is an example of text', 1.5, 5.5, 'white', '30', [0.5, 0.5], 'no change');</code></pre>
+		</div>
+		<ul class='level_two_instructions'>
+			<li>This example will display the text "This is an example of text" at the middle of the video scope, in white, when it plays to 1.5 second and stays at the same place for 4 seconds.</li>
+		</ul>
+		<ul class='instructions'>
+			<li>There are more ways to set up a text as you can set up default values which allows you to use the <strong>createText</strong> method providing less parameters, see <a href="">API documentation</a> to see more instructions.</li>
+		</ul>
+		<br><br><hr><br><br>
+
+		<h3>Using TEPT with YouTube videos</h3><br>
+		<p>If you are planning to use this library with an YouTube video, you are required to embed the YouTube video using <a href="https://developers.google.com/youtube/iframe_api_reference">YouTube iframe API</a>. The following gives instructions on how to use TEPT with embedded YouTube video.</p>
+		<ul class='instructions'>
+			<li>Reference the iframe API in your HTML together with <strong>TEPT.js</strong> and <strong>TEPT.css</strong></li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-html">&lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;TEPT.css&quot;&gt;
+&lt;script src=&quot;https://www.youtube.com/iframe_api&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;js/TEPT.js&quot;&gt;&lt;/script&gt;</code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>Create a <strong>&lt;div&gt;</strong> to be the container of the video player, this will be replaced by <strong>&lt;iframe&gt;</strong> when we set up the video player in JS script</li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-html">&lt;div id=&quot;youtube_video&quot;&gt;&lt;/div&gt;</code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>In the JavaScript, initialize TEPT library, set up the YouTube player, then set up the library using <strong>setYoutubeVideo</strong> giving two variables: <strong>player</strong> which is the video player we setted up just now, and the <strong>id</strong> of <strong>&lt;iframe&gt;</strong>. You can also give the 4 percentage array mentioned before.</li>
+		</ul>
+		<div class="codes">
+			<pre><code class="language-js">const tept = new TEPT();
+
+let player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('youtube_video', {
+        width: 640,
+        height: 360,
+        videoId: 'H8YW1tlsmE8'    // this is the unique video id given by every YouTube video
+    });
+    
+    // set video for TEPT
+    player.addEventListener('onReady', function(e){
+	    tept.setYoutubeVideo(player, 'youtube_video');
+	})
+}</code></pre>
+		</div>
+		<ul class='instructions'>
+			<li>Now you can create texts to be shown on the YouTube video as the same way explained with videos embedded using HTML <strong>&lt;video&gt;</strong> tags above.</li>
+		</ul>
+		<br><br><br><br><hr><br><br>
+
+		<h1>API</h1><br><br>
+		<h2>Text</h2>
+		<p><strong>Text</strong> is a JS Object which every instance represents a single text to be shown on the video. It stores all the properties it has when it will be displayed, and contains methods for updating it's actual location on the screen in order for it to be drawn on canvas showing motions.</p>
+		<p>The following listed the properties and methods of the Text object. Users could create instances of the Text object by using the <strong>TEPT.createText</strong> method(will be explained in more details later in this document), and access existing instances of the Text object from <strong>TEPT.texts</strong> variable. However, users would not have access to create a new instances of Text with the <strong>new</strong> operator.</p>
+		<table class="api_table">
+			<thead>
+				<tr>
+				    <th>Property</th>
+				    <th>Type</th>
+					<th class="d">Description</th>
+				</tr>
+			</thead>
+			<tr>
+		    	<td class='prop'>content</td>
+		    	<td>String</td>
+			    <td class="d">Actual content of Text to be shown on the video.</td>
+			</tr>
+		  	<tr>
+			    <td class='prop'>startTime</td>
+			    <td>Float</td>
+			    <td class="d">The time in the video, in seconds, when this Text should be shown.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>endTime</td>
+			    <td>Float</td>
+			    <td class="d">The time in the video, in seconds, when this Text should disappear.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>color</td>
+			    <td>String</td>
+			    <td class="d">The color this Text will appear with on the video. This String could be in any color format supported by HTML.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>size</td>
+			    <td>Int</td>
+			    <td class="d">Font size this Text will appear with on the video.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>positionPer</td>
+			    <td>Array of Floats</td>
+			    <td class="d">A 2d array containing 2 percentages for calculating the x(positionPer[0]*width) and y(positionPer[1]*height) coordinates of where this Text will be shown on the canvas.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>effect</td>
+			    <td>String</td>
+			    <td class="d">Either <strong>'no change'</strong>, <strong>'left to right'</strong>, <strong>'right to left'</strong>, <strong>'top to bottom'</strong>, <strong>'bottom to top'</strong>, or <strong>'push up'</strong>, which are the existing effects(motions of this Text) in this version of TEPT. </td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>ifAdjust</td>
+			    <td>Boolean</td>
+			    <td class="d">Indicates whether the position of the Text will be adjusted by the time it starts to appear on the video. Texts are often adjusted to avoid overlapping with other Text.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>act_position</td>
+			    <td>Array of Floats</td>
+			    <td class="d">The actual current (x,y) coordinates of this Text on the video. This property changes rapidly as this Text appears on the video if it has an effect that requires motions. </td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>dx</td>
+			    <td>Int</td>
+			    <td class="d">Changes in the x coordinate for every position update to show movement effects.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>dy</td>
+			    <td>Int</td>
+			    <td class="d">Changes in the y coordinate for every position update to show movement effect.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>halfWidth</td>
+			    <td>Float</td>
+			    <td class="d">Half of the acutal width of the Text on the canvas. This property is usually used for checking overlaps of different Texts.</td>
+		  	</tr>
+		</table><br><br>
+		<h2>Text methods</h2><br><hr><br><br>
+		<h3>.constructor</h3><br>
+		<pre><code class="language-js">const text = new Text(content, startTime, endTime, color, size, positionPer, effect, ifAdjust, halfWidth)</code></pre>
+		<p>Contruct a new Text instance with the given parameters. Properties <strong>dx</strong>, <strong>dy</strong> will be initialized within this constructor according to the given <strong>effect</strong>. And set <strong>positionPer</strong> to a default value according to the given <strong>effect</strong> if it is not given to the constructor.</p>
+		<p>However, it is recomended to use <strong>TEPT.createText</strong> method for creating a new Text instead because that method will automatically fill in missing paramaters with default values and add the new Text instance to the library's list of Texts. The method will automatically determine the two properties <strong>ifAdjust</strong> and <strong>halftWidth</strong>. More instructions of <strong>TEPT.createText</strong> is expalain under the TEPT library method list.
+		</p><br><br>
+
+		<h3>.reset</h3><br>
+		<pre><code class="language-js">text.reset(c)</code></pre>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li>c - the canvas element this Text shall be drawn on</li>
+		</ul>
+		<p>Reset the Text property <strong>act_position</strong> to it's initial values according to the <strong>effect</strong> property. This property is meant to be changed at a 60 FPS rate as the video plays if this Text is appearing on the video. Therefore it is required to reset this property before this Text starts to appear on the video. The input parameter <strong>c</strong> is required for this method to get the height and width of the canvas in order to calculate the actual positions since positions are stored by percentages (<strong>positionPer</strong>)</p><br><br>
+
+		<h3>.adjust</h3>
+		<pre><code class="language-js">text.adjust(c, displayingText)</code></pre>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>c</strong> - the canvas element this Text shall be drawn on</li>
+			<li><strong>displayingText</strong> - an array of Texts that are currently displaying on the video</li>
+		</ul>
+		<p>Adjust the property <strong>act_position</strong> if <strong>ifAdjust</strong> is true to avoid overlapping of Texts on the screen. However, only overlapping of Texts with the same <strong>effect</strong> will be avoided. The input parameter <strong>displayingText</strong> is required to compute positions to avoid. And <strong>c</strong> is required to get the height and width of the canvas.</p><br><br>
+
+		<h3>.update</h3>
+		<pre><code class="language-js">text.update(c, currentTime, displayingText)</code></pre>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>c</strong> - the canvas element this Text shall be drawn on</li>
+			<li><strong>currentTime</strong> - current video time in seconds</li>
+			<li><strong>displayingText</strong> - an array of Texts that are currently displaying on the video</li>
+		</ul>
+		<p>Return:</p>
+		<ul class='tept_instructions'>
+			<li>(Boolean) - <strong>true</strong> if this Text instance should still be shown on the video after updating position, <strong>false</strong> otherwise</li>
+		</ul>
+		<p>Update the parameter <strong>act_position</strong> according to the <strong>effect</strong> property of this Text to create movement effects on canvas. Input parameter <strong>c</strong> is required to determine whether the Text moved out of the canvas scope. <strong>currentTime</strong> is required for <strong>effect = 'no change'</strong> Text to determine whether the Text should disappear after it's end time. <strong>displayingTexts</strong> is required for <strong>effect = 'push up'</strong> Text to move if new 'push up' Texts is added to display. </p>
+		<br><br><br><br>
+
+		<h2>TEPT properties</h2><br><br>
+		<table class="api_table">
+			<thead>
+				<tr>
+				    <th>Property</th>
+				    <th>Type</th>
+				    <th>Default Value</th>
+					<th class="d">Description</th>
+				</tr>
+			</thead>
+			<tr>
+		    	<td class='prop'>texts</td>
+		    	<td>array of Text</td>
+		    	<td>[]</td>
+			    <td class="d">A list of Texts created.</td>
+			</tr>
+		  	<tr>
+			    <td class='prop'>defaultDuration</td>
+			    <td>Float</td>
+			    <td>5</td>
+			    <td class="d">Default duration of a Text in seconds. <strong>TEPT.createText</strong> will use this value to calculate the end time for a new Text with <strong>effect='no change'</strong> but does not have a specified end time by user.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>defaultPositionPer</td>
+			    <td>Array of Floats</td>
+			    <td>/</td>
+			    <td class="d">Default position of a Text that is a 2d array containing x and y coordinates in percentages of width and height. <strong>TEPT.createText</strong> will use this value as <strong>positionPer</strong> to create a new Text if it is not defined. Does not have a default value because the Text constructor will assign the <strong>positionPer</strong> according to the <strong>effect</strong> if not given either a specified <strong>positionPer</strong> or <strong>defaultPositionPer</strong>.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>defaultSize</td>
+			    <td>Int</td>
+			    <td>20</td>
+			    <td class="d">Default font size of a Text. <strong>TEPT.createText</strong> will use this value as <strong>size</strong> property to create a new Text if not given by user.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>defaultColor</td>
+			    <td>String</td>
+			    <td>"white"</td>
+			    <td class="d">Default color of a Text. <strong>TEPT.createText</strong> will use this value as <strong>color</strong> property to create a new Text if not given by user.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>defaultEffect</td>
+			    <td>String</td>
+			    <td>"no change"</td>
+			    <td class="d">Default effect of a Text. <strong>TEPT.createText</strong> will use this value as <strong>effect</strong> property to create a new Text if not given by user.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>alignment</td>
+			    <td>String</td>
+			    <td>"center"</td>
+			    <td class="d">Alignment for drawing the text on the canvas. This value will be used to assign the canvas <strong>textAlign</strong> property, so valid values would be 'start', 'end', 'center', 'left', and 'right'.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>v</td>
+			    <td>Object</td>
+			    <td>/</td>
+			    <td class="d">The video object. For a video embedded using HTML &lt;video&qt; tag, <strong>v</strong> is a video element. For a video embedded using YouTube iframe API, <strong>v</strong> is a <strong>YT.Player</strong> object.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>c</td>
+			    <td>&lt;canvas&gt;</td>
+			    <td>/</td>
+			    <td class="d">HTML &lt;canvas&gt; element where Texts will be drawn on. This is create when user set up the library by using either <strong>TEPT.setVideo</strong> or <strong>TEPT.setYoutubeVideo</strong>.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>allTrans</td>
+			    <td>Float</td>
+			    <td>1.0</td>
+			    <td class="d">Persentage of transparency of all Texts showing on the video.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>prevTime</td>
+			    <td>Float</td>
+			    <td>0.0</td>
+			    <td class="d">Constantly record the video time(in seconds) as the video plays. This is to detect if user moved/skipped to a new position in the video (since <strong>YT.Player</strong> does not fire seeked events).</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>getTextIntervalID</td>
+			    <td>Int</td>
+			    <td>/</td>
+			    <td class="d">ID value returned by the <strong>setInterval</strong> method used to check if any Texts should start displaying on the video for every 100ms. This ID is required when stopping this interval.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>timerID</td>
+			    <td>Int</td>
+			    <td>/</td>
+			    <td class="d">ID value returned by the <strong>setInterval</strong> method used to record video playing time for every second. This ID is required when stopping this interval.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>displayingTexts</td>
+			    <td>Array of Texts</td>
+			    <td>[]</td>
+			    <td class="d">List of Text instances which should be displaying on the video at current video time.</td>
+		  	</tr>
+		  	<tr>
+			    <td class='prop'>playAnimate</td>
+			    <td>Boolean</td>
+			    <td>false</td>
+			    <td class="d"><strong>true</strong> if canvas should be drawing, <strong>false</strong> otherwise. </td>
+		  	</tr>
+		</table><br><br>
+
+		<h2>TEPT methods</h2><br><hr><br><br>
+		<h3>.constructor</h3><br>
+		<pre><code class="language-js">const tept = new TEPT();</code></pre>
+		<p>Initialize a TEPT library.</p><br><br>
+
+		<h3>.setVideo</h3><br>
+		<pre><code class="language-js">tept.setVideo('video_id', [0.3, 0.7, 0.3, 0.7]);</code></pre>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>id</strong> - id of the &lt;video&gt; tag</li>
+			<li><strong>canvasArea[=null]</strong> - array of floats indicating minimum x, maximum x, minimum y, maximum y coordinates in percentages.</li>
+		</ul>
+		<p>Set up the library with a video embedded using HTML &lt;video&gt; tag. This method will set up the library variable <strong>v</strong> and <strong>c</strong>. It will add event listeners to state of the video(e.g. play, pause, seeked) and respond with corresponding activities of the Texts. Input parameter <strong>id</strong> is required to query the video element. <strong>canvasArea</strong> is for defining where in the video scope will the canvas be create. It uses percentages so that it will allow resizing the video. <strong>canvasArea</strong> is an optional parameter, so if it is not given, the canvas will be created covering the whole video scope. </p><br><br>
+
+		<h3>.setYoutubeVideo</h3><br>
+		<pre><code class="language-js">let player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('video_id', {
+        width: 640,
+        height: 360,
+        videoId: '<-video id from YouTube->'
+    });
+    // set video for TEPT
+    player.addEventListener('onReady', function(e){
+    	tept.setYoutubeVideo(player, 'video_id', [0.3, 0.7, 0.3, 0.7]);
+    })
+}
+</code></pre>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>player</strong> - YT.Player object </li>
+			<li><strong>id</strong> - id of the &lt;video&gt; tag</li>
+			<li><strong>canvasArea[=null]</strong> - array of floats indicating minimum x, maximum x, minimum y, maximum y coordinates in percentages.</li>
+		</ul>
+		<p>Set up the library with a video embedded using <a href="https://developers.google.com/youtube/iframe_api_reference">YouTube iframe API</a>>. This method will set up the library variable <strong>v</strong> and <strong>c</strong>. It will add event listeners to state of the video(e.g. play, pause) and respond with corresponding activities of the Texts. Input parameter <strong>player</strong> is required to set up event listeners. <strong>id</strong> is required to query the container of <strong>player</strong> to get the dimensions and position of the video for setting up <strong>c</strong>. <strong>canvasArea</strong> is for defining where in the video scope will the canvas be create. It uses percentages so that it will allow resizing the video. <strong>canvasArea</strong> is an optional parameter, so if it is not given, the canvas will be created covering the whole video scope. </p><br><br>
+
+		<h3>.resizeCanvas</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>canvasArea</strong> - array of floats indicating minimum x, maximum x, minimum y, maximum y coordinates in percentages.</li>
+			<li><strong>tept</strong> - the TEPT library instance</li>
+		</ul>
+		<p>A function called by <strong>TEPT.setVideo</strong> and <strong>TEPT.setYoutubeVideo</strong> to resize and relocate the canvas element <strong>c</strong>. However, this version of the TEPT library does not support full screen vidoes.</p><br><br>
+
+		<h3>.getVideoTime</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>v</strong> - either the HTML &lt;video&gt; element or YT.Player object</li>
+		</ul>
+		<p>Get the current time, in seconds, of the video. </p><br><br>
+
+		<h3>.changeTransparency</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>transparency</strong> - Float between [0,1]</li>
+		</ul>
+		<p>Change the transparency for all of the Texts to be drawn with.</p><br><br>
+
+		<h3>.setDefaultDuration</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>duration</strong> - Float indicating seconds</li>
+		</ul>
+		<p>Set the default time duration for a Text that has <strong>effect = 'no change'</strong> but not given an end time.</p><br><br>
+
+		<h3>.setDefaultSize</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>size</strong> - Int indicating font size</li>
+		</ul>
+		<p>Set the default font size for a Text that has no given <strong>size</strong> property.</p><br><br>
+
+		<h3>.setDefaultColor</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>color</strong> - String in any HTML color format</li>
+		</ul>
+		<p>Set the default color for a Text that has no given <strong>color</strong> property. The <strong>color</strong> parameter can be any color format supported by HTML.</p><br><br>
+
+
+		<h3>.setDefaultPositionPer</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>x</strong> - x coordinate in percentage, meaning actual x coordinate within the canvas is <strong>x*width</strong>
+			<li><strong>y</strong> - y coordinate in percentage, meaning actual y coordinate within the canvas is <strong>y*height</strong>
+		</ul>
+		<p>Set the default position in percentage for a Text that has no given <strong>positionPer</strong> property.</p><br><br>
+
+		<h3>.setDefaultEffect</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>effect</strong> - String that is either <strong>'no change'</strong>, <strong>'left to right'</strong>, <strong>'right to left'</strong>, <strong>'top to bottom'</strong>, <strong>'bottom to top'</strong>, or <strong>'push up'</strong>
+		</ul>
+		<p>Set the default effect for a Text that has no given <strong>effect</strong> property.</p><br><br>
+
+		<h3>.changeAlignment</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>align</strong> - String that is either <strong>'start'</strong>, <strong>'end'</strong>, <strong>'left'</strong>, <strong>'right'</strong>, or <strong>'center'</strong></li>
+		</ul>
+		<p>Change the <strong>alignment</strong> property of the library.</p><br><br>
+
+		<h3>.createText</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>content</strong> - String that is the actual content to be shown on the video</li>
+			<li><strong>startTime[=null]</strong> - Float that is the start time of the text, in seconds</li>
+			<li><strong>endTime[=null]</strong> - Float that is the end time of the text, in second</li>
+			<li><strong>color[=null]</strong> - String in any HTML color format</li>
+			<li><strong>size[=null]</strong> - Int that is the font size</li>
+			<li><strong>positionPer[=null]</strong> - array of two floats indicating x and y coordinates in over width and height of the canvas</li>
+			<li><strong>effect[=null]</strong> - String that is either <strong>'no change'</strong>, <strong>'left to right'</strong>, <strong>'right to left'</strong>, <strong>'top to bottom'</strong>, <strong>'bottom to top'</strong>, or <strong>'push up'</strong></li>
+		</ul>
+		<p>Creates a new Text instance and append it to <strong>TEPT.texts</strong>. This will automatically measure the half-width of the content and pass it to the new Text instance as its <strong>halfWidth</strong> property.	For any values not given:</p>
+		<ul class='tept_instructions'>
+			<li>If <strong>startTime</strong> is not given, the current time of the video will be used. </li>
+			<li>If <strong>endTime</strong> is not given, since only Texts with <strong>effect='no change'</strong> requires an end time, so start time plus <strong>TEPT.defaultDuration</strong> will be the <strong>endTime</strong>.</li>
+			<li>If <strong>color</strong> is not given, <strong>TEPT.defaultColor</strong> will be used.</li>
+			<li>If <strong>size</strong> is not given, <strong>TEPT.defaultSize</strong> will be used.</li>
+			<li>If <strong>positionPer</strong> is not given, <strong>TEPT.defaultPositionPer</strong> will be used. And the new Text instance will be create with property <strong>ifAdjust</strong> to be true meaning that the position will be adjusted to avoid overlapping with other Texts.</li>
+			<li>If <strong>effect</strong> is not given, <strong>TEPT.defaultEffect</strong> will be used.</li>
+		</ul>
+		<br><br>
+			
+
+		<h3>.displayTexts</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>tept</strong> - the TEPT library</li>
+		</ul>
+		<p>Method called when video starts to play. Starts the <strong>TEPT.animate</strong>function for drawing on the canvas. Starts a <strong>setInterval</strong> method to check if any Texts should start displaying on the video for every 100ms. And also starts another <strong>setInterval</strong> method for recording the video time every second. </p><br><br>
+
+		<h3>.pauseTexts</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>tept</strong> - the TEPT library</li>
+		</ul>
+		<p>Stops the drawing on the canvas, and stops intervals which are started in the <strong>TEPT.displayTexts</strong> method.</p><br><br>
+
+		<h3>.getAllOnDisplay</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>pendingTexts</strong> - array of Text instances which all have start time later then current video time</li>
+			<li><strong>tept</strong> - the TEPT library</li>
+		</ul>
+		<p>Add any Text instances that should start showing on the video at current video time to <strong>TEPT.displayingTexts</strong>.</p><br><br>
+
+		<h3>.animate</h3><br>
+		<p class='parameters'>Parameters:</p>
+		<ul class='tept_instructions'>
+			<li><strong>tept</strong> - the TEPT library</li>
+		</ul>
+		<p>Erase everything on the canvas and redraw every Text instance in the <strong>TEPT.displayingTexts</strong> list. It uses the <strong>requestAnimationFrame()</strong> method to request the browser to call itseft again in a 60FPS rate whenever <strong>TEPT.playAnimate</strong> is true. After every repaint, it will update to position of every Text instance by calling the <strong>Text.update()</strong> method. If <strong>Text.update()</strong> returns <strong>false</strong> for any Text instance, meaning this instance should not stay on the canvas after update, then it will be removed from the <strong>TEPT.displayingTexts</strong> array. </p>
+		<br><br>
+	</div>
+
+	<div id="footer">
+		<p>TEPT is designed by Nicole Wang for CSC309.</p>
+		<p><strong>Summer 2020.</strong></p>
+	</div>
+	<script type="text/javascript" src="js/TEPT.js"></script>
+ 	<script type="text/javascript" src="js/landing_page.js"></script>
+ 	<script src="https://www.youtube.com/iframe_api"></script>
+ 	<script src="js/prism.js"></script>
+</body>
+</html>
